@@ -6,7 +6,6 @@
 #include "Debug/DebugHelper.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-
 ASRAIController::ASRAIController()
 {
     EnemyAISightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("EnemyAISightConfig"));
@@ -38,18 +37,15 @@ ETeamAttitude::Type ASRAIController::GetTeamAttitudeTowards(const AActor &Other)
 
 void ASRAIController::OnEnemyPerceptionUpdated(AActor *Actor, FAIStimulus Stimulus)
 {
+    float DistanceBetweenControllerAndPlayer =
+        FVector::DistSquared(Actor->GetActorLocation(), GetPawn()->GetActorLocation());
+    const float AISightRadius = FMath::Square(EnemyAISightConfig->SightRadius);
     if (Stimulus.WasSuccessfullySensed() && Actor)
     {
-        if (UBlackboardComponent *BlackBoard = GetBlackboardComponent())
-        {
-            BlackBoard->SetValueAsObject(TargetActorBlackBoardValue, Actor);
-        }
+        PlayerDetected.Broadcast(Actor);
     }
-}
-
-void ASRAIController::OnPossess(APawn *InPawn)
-{
-    Super::OnPossess(InPawn);
-    checkf(BehaviorTree, TEXT("Behavior Tree of enemy is invalid"));
-    RunBehaviorTree(BehaviorTree);
+    else
+    {
+        PlayerLost.Broadcast();
+    }
 }

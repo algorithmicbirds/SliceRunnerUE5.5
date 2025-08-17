@@ -8,6 +8,8 @@
 #include "SREnemy_GunType.generated.h"
 
 class USRAbilitySet;
+class ASRAIController;
+class USREnemyAnimInstance;
     /**
  *
  */
@@ -21,6 +23,27 @@ public:
 protected:
     virtual void RecieveHitEvent() override;
     virtual void PossessedBy(AController *NewController) override;
-    UPROPERTY(EditDefaultsOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+    virtual void BeginPlay() override;
+    UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
     TObjectPtr<USRAbilitySet> AbilitySet;
+
+private:
+    UPROPERTY()
+    TObjectPtr<ASRAIController> AIController;
+
+    UFUNCTION()
+    void OnPlayerDetected(AActor* Actor);
+
+    UFUNCTION()
+    void OnPlayerLost();
+
+    void LookAt();
+
+    FTimerHandle LookAtHandle;
+
+    UPROPERTY()
+    AActor *PlayerCharacter = nullptr;
+
+    UPROPERTY()
+    TObjectPtr<USREnemyAnimInstance> EnemyAnimInstance;
 };

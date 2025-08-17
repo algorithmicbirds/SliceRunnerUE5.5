@@ -8,6 +8,10 @@
 
 class UAISenseConfig_Sight;
 struct FAIStimulus;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerInSightDelegate, AActor*, Actor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerOutofSightDelegate);
+
 /**
  *
  */
@@ -17,13 +21,15 @@ class SLICERUNNER_API ASRAIController : public AAIController
     GENERATED_BODY()
 public:
     ASRAIController();
+    bool IsPlayerInSight() { return bIsPlayerInSight; }
+    FPlayerInSightDelegate PlayerDetected;
+    FPlayerOutofSightDelegate PlayerLost;
 
 protected:
     virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor &Other) const override;
 
     UFUNCTION()
     void OnEnemyPerceptionUpdated(AActor *Actor, FAIStimulus Stimulus);
-    virtual void OnPossess(APawn *InPawn) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TObjectPtr<UAIPerceptionComponent> EnemyAIPerception;
@@ -31,9 +37,6 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TObjectPtr<UAISenseConfig_Sight> EnemyAISightConfig;
 
-    UPROPERTY(EditDefaultsOnly)
-    TObjectPtr<UBehaviorTree> BehaviorTree;
-
-    UPROPERTY(EditDefaultsOnly)
-    FName TargetActorBlackBoardValue;
+private:
+    bool bIsPlayerInSight = false;
 };
