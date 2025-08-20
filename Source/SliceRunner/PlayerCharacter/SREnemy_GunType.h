@@ -10,7 +10,8 @@
 class USRAbilitySet;
 class ASRAIController;
 class USREnemyAnimInstance;
-    /**
+
+/**
  *
  */
 UCLASS()
@@ -27,22 +28,29 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
     TObjectPtr<USRAbilitySet> AbilitySet;
 
+    UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+    float PushBackDist = 300.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+    float PushBackSpeed = 30.0f;
+
 private:
     UPROPERTY()
     TObjectPtr<ASRAIController> AIController;
 
     UFUNCTION()
-    void OnPlayerDetected(AActor* Actor);
+    void OnTargetDetected(AActor *Actor);
 
     UFUNCTION()
-    void OnPlayerLost();
+    void OnTargetLost();
 
-    void LookAt();
+    void FaceTargetAndPushBack();
 
     FTimerHandle LookAtHandle;
+    FTimerHandle MoveAwayHandle;
 
     UPROPERTY()
-    AActor *PlayerCharacter = nullptr;
+    AActor *TargetActor = nullptr;
 
     UPROPERTY()
     TObjectPtr<USREnemyAnimInstance> EnemyAnimInstance;

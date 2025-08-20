@@ -14,7 +14,7 @@ ASRAIController::ASRAIController()
     EnemyAISightConfig->DetectionByAffiliation.bDetectNeutrals = true;
     EnemyAISightConfig->SightRadius = 10000.0f;
     EnemyAISightConfig->LoseSightRadius = 1000.0f;
-    EnemyAISightConfig->PeripheralVisionAngleDegrees = 360.0f;
+    EnemyAISightConfig->PeripheralVisionAngleDegrees = 90.0f;
 
     EnemyAIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("EnemyAIPerception"));
     EnemyAIPerception->ConfigureSense(*EnemyAISightConfig);
@@ -37,15 +37,12 @@ ETeamAttitude::Type ASRAIController::GetTeamAttitudeTowards(const AActor &Other)
 
 void ASRAIController::OnEnemyPerceptionUpdated(AActor *Actor, FAIStimulus Stimulus)
 {
-    float DistanceBetweenControllerAndPlayer =
-        FVector::DistSquared(Actor->GetActorLocation(), GetPawn()->GetActorLocation());
-    const float AISightRadius = FMath::Square(EnemyAISightConfig->SightRadius);
     if (Stimulus.WasSuccessfullySensed() && Actor)
     {
-        PlayerDetected.Broadcast(Actor);
+        TargetDetected.Broadcast(Actor);
     }
     else
     {
-        PlayerLost.Broadcast();
+        TargetLost.Broadcast();
     }
 }

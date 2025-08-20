@@ -9,8 +9,8 @@
 class UAISenseConfig_Sight;
 struct FAIStimulus;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerInSightDelegate, AActor*, Actor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerOutofSightDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTargetInSightDelegate, AActor*, Actor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTargetOutofSightDelegate);
 
 /**
  *
@@ -21,9 +21,8 @@ class SLICERUNNER_API ASRAIController : public AAIController
     GENERATED_BODY()
 public:
     ASRAIController();
-    bool IsPlayerInSight() { return bIsPlayerInSight; }
-    FPlayerInSightDelegate PlayerDetected;
-    FPlayerOutofSightDelegate PlayerLost;
+    FTargetInSightDelegate TargetDetected;
+    FTargetOutofSightDelegate TargetLost;
 
 protected:
     virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor &Other) const override;
@@ -36,7 +35,4 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TObjectPtr<UAISenseConfig_Sight> EnemyAISightConfig;
-
-private:
-    bool bIsPlayerInSight = false;
 };
