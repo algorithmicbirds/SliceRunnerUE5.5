@@ -8,6 +8,8 @@
 #include "SRAbility_Attack.generated.h"
 
 class UAnimMontage;
+class USRWeaponBase;
+
     /**
  *
  */
@@ -22,12 +24,6 @@ public:
 
 
 protected:
-    void OnMontageCompleted();
-    void OnMontageInterrupted();
-    void AttackWindowOpened(const FGameplayTag &Tag);
-    void AttackState(const FGameplayTag &Tag);
-    void PlayAttackMontage();
-
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     TArray<TObjectPtr<UAnimMontage>> AttackAnimComboMantages;
 
@@ -40,5 +36,23 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "HitDetecion")
     FName HitDetectionEndSocket = "blade_tip_socket";
 
+
+private:
+    void UpdateAttackIndex();
+    void OnMontageCompleted();
+    void OnMontageInterrupted();
+    void AttackWindowOpened(const FGameplayTag &Tag);
+    void AttackState(const FGameplayTag &Tag);
+    void PlayAttackMontage();
+
     int AttackCount = 0;
+    UPROPERTY()
+    TObjectPtr<USRBaseAnimInstance> AnimInstance = nullptr;
+
+    UPROPERTY()
+    TObjectPtr<ASRBaseCharacter> Character = nullptr;
+
+    UPROPERTY()
+    TObjectPtr<USRWeaponBase> WeaponMesh = nullptr;
+    
 };
