@@ -28,11 +28,14 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
     TObjectPtr<USRAbilitySet> AbilitySet;
 
-    UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+    UPROPERTY(EditDefaultsOnly, Category = "Combat")
     float PushBackDist = 300.0f;
 
-    UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+    UPROPERTY(EditDefaultsOnly, Category = "Combat")
     float PushBackSpeed = 30.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Combat")
+    float MaxVerticalRotationZ = 0.1f;
 
 private:
     UPROPERTY()
@@ -45,6 +48,7 @@ private:
     void OnTargetLost();
 
     void FaceTargetAndPushBack();
+    void Shoot();
 
     FTimerHandle LookAtHandle;
     FTimerHandle MoveAwayHandle;

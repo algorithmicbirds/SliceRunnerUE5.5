@@ -17,7 +17,7 @@ UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Dash, "AbilityTag.Movement.Dash");
 UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Grapple, "AbilityTag.Movement.Grapple");
 UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Attack, "AbilityTag.Combat.Attack");
 UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Death, "AbilityTag.State.Death");
-UE_DEFINE_GAMEPLAY_TAG(AbilityTag_LookAt, "AbilityTag.Combat.LookAt");
+UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Shoot, "AbilityTag.Combat.Shoot");
 
 UE_DEFINE_GAMEPLAY_TAG(EventTag_AttackWindow, "EventTag.AttackWindow");
 UE_DEFINE_GAMEPLAY_TAG(EventTag_AttackState, "EventTag.AttackState");

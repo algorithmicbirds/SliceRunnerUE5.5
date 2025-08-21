@@ -38,15 +38,24 @@ void ASREnemy_GunType::BeginPlay()
 {
     Super::BeginPlay();
     EnemyAnimInstance = Cast<USREnemyAnimInstance>(GetMesh()->GetAnimInstance());
+    
 }
 
 void ASREnemy_GunType::OnTargetDetected(AActor *Actor)
 {
     GetWorldTimerManager().SetTimer(LookAtHandle, this, &ASREnemy_GunType::FaceTargetAndPushBack, 0.016f, true);
+    GetWorldTimerManager().SetTimer(LookAtHandle, this, &ASREnemy_GunType::Shoot, 0.1f, true);
     TargetActor = Actor;
 }
 
-void ASREnemy_GunType::OnTargetLost() { GetWorldTimerManager().ClearTimer(LookAtHandle); }
+void ASREnemy_GunType::OnTargetLost()
+{
+    GetWorldTimerManager().ClearTimer(LookAtHandle);
+    if (EnemyAnimInstance)
+    {
+        EnemyAnimInstance->SetTargetVisible(false);
+    }
+}
 
 void ASREnemy_GunType::FaceTargetAndPushBack()
 {
@@ -63,8 +72,13 @@ void ASREnemy_GunType::FaceTargetAndPushBack()
             SetActorLocation(CurrentPosition - NormalizedDirection * PushBackSpeed);
         }
 
-        FRotator TargetRotation = FRotationMatrix::MakeFromX(NormalizedDirection).Rotator();
-        SetActorRotation(TargetRotation);
+        // Rotate Enemy to face the  Target if vertical angle is within allowed constraints
+        // Prevents Enemy from tilting whole body upwards when target is airborne
+        if (NormalizedDirection.Z <= MaxVerticalRotationZ)
+        {
+            FRotator TargetRotation = FRotationMatrix::MakeFromX(NormalizedDirection).Rotator();
+            SetActorRotation(TargetRotation);
+        }
         if (EnemyAnimInstance)
         {
             EnemyAnimInstance->SetTargetVisible(true);
@@ -80,3 +94,6 @@ void ASREnemy_GunType::FaceTargetAndPushBack()
         Debug::Print("Target Actor is invalid");
     }
 }
+
+void ASREnemy_GunType::Shoot() {  }
+
