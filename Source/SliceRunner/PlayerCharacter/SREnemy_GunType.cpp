@@ -7,8 +7,13 @@
 #include "AbilitySystem/SRAbilitySet.h"
 #include "Controllers/SRAIController.h"
 #include "AnimInstance/Enemy/SREnemyAnimInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-ASREnemy_GunType::ASREnemy_GunType() {}
+ASREnemy_GunType::ASREnemy_GunType()
+{
+    PrimaryActorTick.bStartWithTickEnabled = true;
+    PrimaryActorTick.bCanEverTick = true;
+}
 
 void ASREnemy_GunType::RecieveHitEvent()
 {
@@ -41,16 +46,24 @@ void ASREnemy_GunType::BeginPlay()
     
 }
 
+void ASREnemy_GunType::Tick(float DeltaTime) { 
+    if (bIsTargetInRange)
+    {
+        FaceTargetAndPushBack();
+    }
+}
+
 void ASREnemy_GunType::OnTargetDetected(AActor *Actor)
 {
-    GetWorldTimerManager().SetTimer(LookAtHandle, this, &ASREnemy_GunType::FaceTargetAndPushBack, 0.016f, true);
-    GetWorldTimerManager().SetTimer(LookAtHandle, this, &ASREnemy_GunType::Shoot, 0.1f, true);
+    bIsTargetInRange = true;
     TargetActor = Actor;
+    GetWorldTimerManager().SetTimer(ShootHandle, this, &ASREnemy_GunType::Shoot, 0.1f, true);
 }
 
 void ASREnemy_GunType::OnTargetLost()
 {
-    GetWorldTimerManager().ClearTimer(LookAtHandle);
+    bIsTargetInRange = false;
+    GetWorldTimerManager().ClearTimer(ShootHandle);
     if (EnemyAnimInstance)
     {
         EnemyAnimInstance->SetTargetVisible(false);
@@ -59,41 +72,39 @@ void ASREnemy_GunType::OnTargetLost()
 
 void ASREnemy_GunType::FaceTargetAndPushBack()
 {
-    if (TargetActor)
+    if (!TargetActor || !EnemyAnimInstance)
     {
-        FVector TargetPosition = TargetActor->GetActorLocation();
-        FVector CurrentPosition = GetActorLocation();
-        FVector Direction = TargetPosition - CurrentPosition;
-        FVector NormalizedDirection = Direction.GetSafeNormal();
-        float DistanceToTarget = Direction.Size();
+        Debug::Print("Target Actor or Enemy Anim Instance is invalid");
+        return;
+    }
 
-        if (DistanceToTarget < PushBackDist)
-        {
-            SetActorLocation(CurrentPosition - NormalizedDirection * PushBackSpeed);
-        }
+    FVector TargetPosition = TargetActor->GetActorLocation();
+    FVector CurrentPosition = GetActorLocation();
+    FVector Direction = TargetPosition - CurrentPosition;
+    FVector NormalizedDirection = Direction.GetSafeNormal();
+    float DistanceToTarget = Direction.Size();
 
-        // Rotate Enemy to face the  Target if vertical angle is within allowed constraints
-        // Prevents Enemy from tilting whole body upwards when target is airborne
-        if (NormalizedDirection.Z <= MaxVerticalRotationZ)
-        {
-            FRotator TargetRotation = FRotationMatrix::MakeFromX(NormalizedDirection).Rotator();
-            SetActorRotation(TargetRotation);
-        }
-        if (EnemyAnimInstance)
-        {
-            EnemyAnimInstance->SetTargetVisible(true);
-            EnemyAnimInstance->SetTargetLocation(TargetActor->GetActorLocation());
-        }
-        else
-        {
-            Debug::Print("Enemy anim instance is invalid");
-        }
+    if (DistanceToTarget < PushBackDist)
+    {
+        EnemyAnimInstance->SetIsMovingAwayFromTarget(true);
+        PushBackSpeed = GetCharacterMovement()->GetMaxSpeed();
+        AddMovementInput(-NormalizedDirection, PushBackSpeed);
     }
     else
     {
-        Debug::Print("Target Actor is invalid");
+        EnemyAnimInstance->SetIsMovingAwayFromTarget(false);
     }
+
+    // Rotate Enemy to face the  Target if vertical angle is within allowed constraints
+    // Prevents Enemy from tilting whole body upwards when target is airborne
+    if (NormalizedDirection.Z <= MaxVerticalRotationZ)
+    {
+        FRotator TargetRotation = FRotationMatrix::MakeFromX(NormalizedDirection).Rotator();
+        SetActorRotation(TargetRotation);
+    }
+
+    EnemyAnimInstance->SetTargetLocation(TargetActor->GetActorLocation());
+    EnemyAnimInstance->SetTargetVisible(true);
 }
 
-void ASREnemy_GunType::Shoot() {  }
-
+void ASREnemy_GunType::Shoot() {}

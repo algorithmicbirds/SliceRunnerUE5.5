@@ -25,6 +25,7 @@ protected:
     virtual void RecieveHitEvent() override;
     virtual void PossessedBy(AController *NewController) override;
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
     UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
     TObjectPtr<USRAbilitySet> AbilitySet;
 
@@ -50,12 +51,13 @@ private:
     void FaceTargetAndPushBack();
     void Shoot();
 
-    FTimerHandle LookAtHandle;
-    FTimerHandle MoveAwayHandle;
+    FTimerHandle ShootHandle;
 
     UPROPERTY()
     AActor *TargetActor = nullptr;
 
     UPROPERTY()
     TObjectPtr<USREnemyAnimInstance> EnemyAnimInstance;
+
+    bool bIsTargetInRange = false;
 };
