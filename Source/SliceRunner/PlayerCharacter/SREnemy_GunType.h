@@ -10,6 +10,7 @@
 class USRAbilitySet;
 class ASRAIController;
 class USREnemyAnimInstance;
+class ASRBulletProjectile;
 
 /**
  *
@@ -26,17 +27,17 @@ protected:
     virtual void PossessedBy(AController *NewController) override;
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
-    UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+    UPROPERTY(EditDefaultsOnly, Category = "EnemyData")
     TObjectPtr<USRAbilitySet> AbilitySet;
+
+    UPROPERTY(EditDefaultsOnly, Category = "EnemyData")
+    TSubclassOf<ASRBulletProjectile> BulletProjectileClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "EnemyData")
+    FName ProjectileSpawnSocketName = "projectile_socket";
 
     UPROPERTY(EditDefaultsOnly, Category = "Combat")
     float PushBackDist = 300.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Combat")
-    float PushBackSpeed = 30.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Combat")
-    float MaxVerticalRotationZ = 0.1f;
 
 private:
     UPROPERTY()
@@ -48,7 +49,7 @@ private:
     UFUNCTION()
     void OnTargetLost();
 
-    void FaceTargetAndPushBack();
+    void FaceTargetAndPushBack(float DeltaTime);
     void Shoot();
 
     FTimerHandle ShootHandle;
@@ -60,4 +61,7 @@ private:
     TObjectPtr<USREnemyAnimInstance> EnemyAnimInstance;
 
     bool bIsTargetInRange = false;
+
+    float ShootInterVal = 0.1f;
+    float TimeSinceLastShot = 0.0f;
 };

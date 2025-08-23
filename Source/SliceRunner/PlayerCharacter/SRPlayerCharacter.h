@@ -83,14 +83,5 @@ private:
 
 public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
-    float JumpVelocity = 600.0f;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
-    float AirControl = 1.0f;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
-    float FallingBrakingDeceleration = 1500.0f;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
     float DashStrafeOffsetScale = 3.0f;
 };

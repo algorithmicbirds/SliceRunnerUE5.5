@@ -13,7 +13,8 @@ class SLICERUNNER_API USRAbility_Dash : public USRAbilityBase
 public:
     USRAbility_Dash();
 
-protected:
+private:
     virtual void ActivateAbility(const FSRAbilityActivationContext &Context) override;
     virtual void EndAbility() override;
+    float OriginalAirControl;
 };

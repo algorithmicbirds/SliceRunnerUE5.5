@@ -30,9 +30,6 @@ ASRPlayerCharacter::ASRPlayerCharacter()
 
     GetMesh()->SetupAttachment(FirstPersonCameraComponent);
 
-    GetCharacterMovement()->BrakingDecelerationFalling = FallingBrakingDeceleration;
-    GetCharacterMovement()->AirControl = AirControl;
-    GetCharacterMovement()->JumpZVelocity = JumpVelocity;
     WeaponMesh->SetupAttachment(GetMesh(), TEXT("katana_socket"));
 
     GrappleDetectionComponent = CreateDefaultSubobject<USRGrappleDetectionComponent>(TEXT("GrappleDetectionComponent"));

@@ -17,7 +17,6 @@ class SLICERUNNER_API USREnemyAnimInstance : public USRCharacterAnimInstance
 public:
     void SetTargetLocation(FVector InLocation) { TargetLocation = InLocation; }
     void SetTargetVisible(bool InTargetVisible) { bIsTargetVisible = InTargetVisible; }
-    void SetIsMovingAwayFromTarget(bool InIsMovingAwayFromEnemy) { bIsMovingAwayFromTarget = InIsMovingAwayFromEnemy; }
     virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
     
 
@@ -31,7 +30,5 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float Direction;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool bIsMovingAwayFromTarget = false;
 
 };

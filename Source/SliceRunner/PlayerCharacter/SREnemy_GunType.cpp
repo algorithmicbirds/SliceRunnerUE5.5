@@ -8,11 +8,15 @@
 #include "Controllers/SRAIController.h"
 #include "AnimInstance/Enemy/SREnemyAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PlayerCharacter/SRWeaponBase.h"
+#include "PlayerCharacter/SRBulletProjectile.h"
 
-ASREnemy_GunType::ASREnemy_GunType()
+ASREnemy_GunType::ASREnemy_GunType()    
 {
     PrimaryActorTick.bStartWithTickEnabled = true;
     PrimaryActorTick.bCanEverTick = true;
+
+    WeaponMesh->SetupAttachment(RootComponent);
 }
 
 void ASREnemy_GunType::RecieveHitEvent()
@@ -49,7 +53,7 @@ void ASREnemy_GunType::BeginPlay()
 void ASREnemy_GunType::Tick(float DeltaTime) { 
     if (bIsTargetInRange)
     {
-        FaceTargetAndPushBack();
+        FaceTargetAndPushBack(DeltaTime);
     }
 }
 
@@ -57,12 +61,12 @@ void ASREnemy_GunType::OnTargetDetected(AActor *Actor)
 {
     bIsTargetInRange = true;
     TargetActor = Actor;
-    GetWorldTimerManager().SetTimer(ShootHandle, this, &ASREnemy_GunType::Shoot, 0.1f, true);
+    //GetWorldTimerManager().SetTimer(ShootHandle, this, &ASREnemy_GunType::Shoot, 0.1f, true);
 }
 
 void ASREnemy_GunType::OnTargetLost()
 {
-    bIsTargetInRange = false;
+    //bIsTargetInRange = false;
     GetWorldTimerManager().ClearTimer(ShootHandle);
     if (EnemyAnimInstance)
     {
@@ -70,7 +74,7 @@ void ASREnemy_GunType::OnTargetLost()
     }
 }
 
-void ASREnemy_GunType::FaceTargetAndPushBack()
+void ASREnemy_GunType::FaceTargetAndPushBack(float DeltaTime)
 {
     if (!TargetActor || !EnemyAnimInstance)
     {
@@ -81,30 +85,33 @@ void ASREnemy_GunType::FaceTargetAndPushBack()
     FVector TargetPosition = TargetActor->GetActorLocation();
     FVector CurrentPosition = GetActorLocation();
     FVector Direction = TargetPosition - CurrentPosition;
-    FVector NormalizedDirection = Direction.GetSafeNormal();
+    FVector FlattenDirectionVec = FVector(Direction.X, Direction.Y, 0.0f).GetSafeNormal();
     float DistanceToTarget = Direction.Size();
 
     if (DistanceToTarget < PushBackDist)
     {
-        EnemyAnimInstance->SetIsMovingAwayFromTarget(true);
-        PushBackSpeed = GetCharacterMovement()->GetMaxSpeed();
-        AddMovementInput(-NormalizedDirection, PushBackSpeed);
-    }
-    else
-    {
-        EnemyAnimInstance->SetIsMovingAwayFromTarget(false);
+        const float Scale = GetCharacterMovement()->GetMaxSpeed() * DeltaTime;
+        AddMovementInput(-FlattenDirectionVec, Scale);
     }
 
-    // Rotate Enemy to face the  Target if vertical angle is within allowed constraints
-    // Prevents Enemy from tilting whole body upwards when target is airborne
-    if (NormalizedDirection.Z <= MaxVerticalRotationZ)
-    {
-        FRotator TargetRotation = FRotationMatrix::MakeFromX(NormalizedDirection).Rotator();
-        SetActorRotation(TargetRotation);
-    }
+    
+
+    SetActorRotation(FlattenDirectionVec.Rotation());
 
     EnemyAnimInstance->SetTargetLocation(TargetActor->GetActorLocation());
     EnemyAnimInstance->SetTargetVisible(true);
+
+    TimeSinceLastShot += DeltaTime;
+    if (TimeSinceLastShot >= ShootInterVal)
+    {
+        Shoot();
+        TimeSinceLastShot = 0.0f;
+    }
 }
 
-void ASREnemy_GunType::Shoot() {}
+void ASREnemy_GunType::Shoot()
+{
+    FVector SpawnLocation = WeaponMesh->GetSocketLocation(ProjectileSpawnSocketName);
+    FRotator SocketRotation = WeaponMesh->GetSocketRotation(ProjectileSpawnSocketName);
+    GetWorld()->SpawnActor<ASRBulletProjectile>(BulletProjectileClass, SpawnLocation, SocketRotation);
+}
