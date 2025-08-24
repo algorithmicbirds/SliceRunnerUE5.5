@@ -135,6 +135,14 @@ void ASRPlayerCharacter::SetAbilityFlags(const FGateAbilityFlags &InFlags)
         GrappleDetectionComponent->DisableGrappleDetection();
     }
 }
+
+void ASRPlayerCharacter::RecieveHitEvent() { 
+    Debug::Print("Receieve Hit player");
+    SRAMC->StartAbilityByTag(SRGameplayTags::AbilityTag_Death); 
+
+}
+
+
 #pragma region Inputs
 void ASRPlayerCharacter::Input_Move(const FInputActionValue &InputActionValue)
 {
@@ -228,6 +236,10 @@ void ASRPlayerCharacter::Input_Attack(const FInputActionValue &InputActionValue)
     {
         SRAMC->StopAbilityByTag(SRGameplayTags::AbilityTag_Attack);
     }
+}
+
+void ASRPlayerCharacter::Input_Respawn() {
+    Res
 }
 
 #pragma endregion

@@ -11,7 +11,7 @@
 #include "PlayerCharacter/SRWeaponBase.h"
 #include "PlayerCharacter/SRBulletProjectile.h"
 
-ASREnemy_GunType::ASREnemy_GunType()    
+ASREnemy_GunType::ASREnemy_GunType()
 {
     PrimaryActorTick.bStartWithTickEnabled = true;
     PrimaryActorTick.bCanEverTick = true;
@@ -47,10 +47,10 @@ void ASREnemy_GunType::BeginPlay()
 {
     Super::BeginPlay();
     EnemyAnimInstance = Cast<USREnemyAnimInstance>(GetMesh()->GetAnimInstance());
-    
 }
 
-void ASREnemy_GunType::Tick(float DeltaTime) { 
+void ASREnemy_GunType::Tick(float DeltaTime)
+{
     if (bIsTargetInRange)
     {
         FaceTargetAndPushBack(DeltaTime);
@@ -61,18 +61,18 @@ void ASREnemy_GunType::OnTargetDetected(AActor *Actor)
 {
     bIsTargetInRange = true;
     TargetActor = Actor;
-    //GetWorldTimerManager().SetTimer(ShootHandle, this, &ASREnemy_GunType::Shoot, 0.1f, true);
 }
 
 void ASREnemy_GunType::OnTargetLost()
 {
-    //bIsTargetInRange = false;
+    bIsTargetInRange = false;
     GetWorldTimerManager().ClearTimer(ShootHandle);
     if (EnemyAnimInstance)
     {
         EnemyAnimInstance->SetTargetVisible(false);
     }
 }
+
 
 void ASREnemy_GunType::FaceTargetAndPushBack(float DeltaTime)
 {
@@ -93,8 +93,6 @@ void ASREnemy_GunType::FaceTargetAndPushBack(float DeltaTime)
         const float Scale = GetCharacterMovement()->GetMaxSpeed() * DeltaTime;
         AddMovementInput(-FlattenDirectionVec, Scale);
     }
-
-    
 
     SetActorRotation(FlattenDirectionVec.Rotation());
 

@@ -7,12 +7,12 @@
 #include "SRAbility_Death.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class SLICERUNNER_API USRAbility_Death : public USRAbilityBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 protected:
-        virtual void ActivateAbility(const FSRAbilityActivationContext &Context) override;
+    virtual void ActivateAbility(const FSRAbilityActivationContext &Context) override;
 };

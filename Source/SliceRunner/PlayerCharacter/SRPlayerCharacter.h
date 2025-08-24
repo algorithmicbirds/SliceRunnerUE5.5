@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "Interfaces/Gate/GateRuleInterface.h"
+#include "Interfaces/SRReceiveHitInterface.h"
 #include "PlayerCharacter/SRBaseCharacter.h"
 #include "SRPlayerCharacter.generated.h"
 
@@ -19,7 +20,7 @@ class UAIPerceptionStimuliSourceComponent;
 
 
 UCLASS()
-class SLICERUNNER_API ASRPlayerCharacter : public ASRBaseCharacter, public IGateRuleInterface
+class SLICERUNNER_API ASRPlayerCharacter : public ASRBaseCharacter, public IGateRuleInterface, public ISRReceiveHitInterface
 {
     GENERATED_BODY()
 
@@ -28,7 +29,7 @@ public:
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
     virtual void SetAbilityFlags(const FGateAbilityFlags &InFlags) override;
-
+    virtual void RecieveHitEvent() override;
 
 protected:
     virtual void BeginPlay() override;

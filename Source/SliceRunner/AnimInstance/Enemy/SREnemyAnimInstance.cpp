@@ -1,10 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AnimInstance/Enemy/SREnemyAnimInstance.h"
 #include "PlayerCharacter/SRBaseCharacter.h"
-
-
+#include "KismetAnimationLibrary.h"
 
 void USREnemyAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 {
@@ -13,5 +11,5 @@ void USREnemyAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
     {
         return;
     }
-    Direction = CalculateDirection(Character->GetVelocity(), Character->GetActorRotation());
+    Direction = UKismetAnimationLibrary::CalculateDirection(Character->GetVelocity(), Character->GetActorRotation());
 }

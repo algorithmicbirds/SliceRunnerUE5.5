@@ -19,8 +19,9 @@ public class SliceRunner : ModuleRules
 			"Niagara",
 			"GameplayTasks",
 			"ControlRig",
-			"RigVM"
-		});
+			"RigVM",
+            "AnimGraphRuntime",
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
