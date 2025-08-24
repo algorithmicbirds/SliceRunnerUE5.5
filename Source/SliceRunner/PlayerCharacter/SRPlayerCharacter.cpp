@@ -122,6 +122,14 @@ void ASRPlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputC
         this,
         &ASRPlayerCharacter::Input_Attack
     );
+
+    SRInputComp->BindNativeInputAction(
+        InputDataAssetConfig,
+        SRGameplayTags::InputTag_Attack,
+        ETriggerEvent::Triggered,
+        this,
+        &ASRPlayerCharacter::Input_Respawn
+    );
 }
 
 void ASRPlayerCharacter::SetAbilityFlags(const FGateAbilityFlags &InFlags)
@@ -136,12 +144,11 @@ void ASRPlayerCharacter::SetAbilityFlags(const FGateAbilityFlags &InFlags)
     }
 }
 
-void ASRPlayerCharacter::RecieveHitEvent() { 
+void ASRPlayerCharacter::RecieveHitEvent()
+{
     Debug::Print("Receieve Hit player");
-    SRAMC->StartAbilityByTag(SRGameplayTags::AbilityTag_Death); 
-
+    SRAMC->StartAbilityByTag(SRGameplayTags::AbilityTag_Death);
 }
-
 
 #pragma region Inputs
 void ASRPlayerCharacter::Input_Move(const FInputActionValue &InputActionValue)
@@ -238,8 +245,13 @@ void ASRPlayerCharacter::Input_Attack(const FInputActionValue &InputActionValue)
     }
 }
 
-void ASRPlayerCharacter::Input_Respawn() {
-    Res
+void ASRPlayerCharacter::Input_Respawn(const FInputActionValue &InputActionValue)
+{
+    if (InputActionValue.Get<bool>())
+    {
+        GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+        GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    }
 }
 
 #pragma endregion

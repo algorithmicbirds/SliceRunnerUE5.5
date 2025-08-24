@@ -15,4 +15,7 @@ class SLICERUNNER_API USRAbility_Death : public USRAbilityBase
     GENERATED_BODY()
 protected:
     virtual void ActivateAbility(const FSRAbilityActivationContext &Context) override;
+
+    UPROPERTY(EditDefaultsOnly)
+    TObjectPtr<UAnimMontage> DeathMontage;
 };

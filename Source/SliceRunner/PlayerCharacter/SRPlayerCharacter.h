@@ -79,6 +79,7 @@ private:
     void Input_Dash(const FInputActionValue &InputActionValue);
     void Input_Grapple(const FInputActionValue &InputActionValue);
     void Input_Attack(const FInputActionValue &InputActionValue);
+    void Input_Respawn(const FInputActionValue &InputActionValue);
 
 #pragma endregion
 

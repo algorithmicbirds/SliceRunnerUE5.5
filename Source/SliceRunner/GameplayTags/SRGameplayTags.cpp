@@ -11,6 +11,7 @@ UE_DEFINE_GAMEPLAY_TAG(InputTag_Jump, "InputTag.Jump");
 UE_DEFINE_GAMEPLAY_TAG(InputTag_Dash, "InputTag.Dash");
 UE_DEFINE_GAMEPLAY_TAG(InputTag_Grapple, "InputTag.Grapple");
 UE_DEFINE_GAMEPLAY_TAG(InputTag_Attack, "InputTag.Attack");
+UE_DEFINE_GAMEPLAY_TAG(InputTag_Respawn, "InputTag.Respawn");
 
 UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Jump, "AbilityTag.Movement.Jump");
 UE_DEFINE_GAMEPLAY_TAG(AbilityTag_Dash, "AbilityTag.Movement.Dash");
